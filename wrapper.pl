@@ -58,6 +58,14 @@ our $latest_ojvm_patch_id;
 our @homes = ( $data =~ /:(.*)\:/g);
 our @distinct_homes = uniq @homes;
 
+$ORACLE_HOME = $distinct_homes [0];
+print "setting environment variable for ORACLE_HOME:  $ORACLE_HOME \n";
+
+our $unix_path_variable = $ENV{PATH} .= ":$ORACLE_HOME/bin";
+
+print "setting environment variable for PATH:  $unix_path_variable \n";
+
+
 
 #print map { "$_\n" } @distinct_homes;
 
