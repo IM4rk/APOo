@@ -12,7 +12,6 @@ use Date::Manip;
 our $ORACLE_HOME;
 our $ORACLE_SID;
 
-our $data =  `cat /etc/oratab`;
 our $patch_base_dir = "/oracle/scripts/APOo/";
 our $patcher_cmd = "/oracle/scripts/APOo/patcher.pl";
 our $patch_dir = "/oracle/scripts/APOo/patch_downloader/";
@@ -39,11 +38,15 @@ system ($dl_master_patchnote);
 `rm -rf $psu_latest_patch_dir/* > /dev/null 2>&1`;
 `rm -rf $ojvm_latest_patch_dir/* > /dev/null 2>&1`;
 
-#-- Delete commented lines on /etc/oratab
+#-- Delete commented lines  as well as  white spaceson /etc/oratab
 our $oratab_conf = "/etc/oratab";
 our $oratab_cleaner_cmd = "sudo sed -i \'/^\\s*[@#]/ d\' $oratab_conf";
 chomp $oratab_cleaner_cmd;
 `$oratab_cleaner_cmd`;
+
+our $clean_white_space = "sudo sed -i  \'/^\\s*\$/d\' /etc/oratab";
+chomp $clean_white_space;
+`$clean_white_space`;
 
 
 
@@ -55,10 +58,13 @@ our $latest_ojvm_patch_id;
 
 
 #--find out  distinct ORACLE_HOMES in the box
+
+our $data =  `cat /etc/oratab`;
 our @homes = ( $data =~ /:(.*)\:/g);
 our @distinct_homes = uniq @homes;
 
 $ORACLE_HOME = $distinct_homes [0];
+chomp $ORACLE_HOME;
 print "setting environment variable for ORACLE_HOME:  $ORACLE_HOME \n";
 
 our $unix_path_variable = $ENV{PATH} .= ":$ORACLE_HOME/bin";
