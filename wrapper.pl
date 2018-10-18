@@ -151,7 +151,7 @@ foreach (@distinct_homes)
 
 
 our $current_date_cmd = `date +"%y%m%d"`;
-our $three_months_ago_cmd= "date +\"%y%m%d\" --date=\"100 day ago\"";
+our $three_months_ago_cmd= "date +\"%y%m%d\" --date=\"93 day ago\"";
 our $three_months_ago_date=`$three_months_ago_cmd`;
 
 #-- psu release date and current date to seconds from epoch
