@@ -151,7 +151,7 @@ foreach (@distinct_homes)
 
 
 our $current_date_cmd = `date +"%y%m%d"`;
-our $three_months_ago_cmd= "date +\"%y%m%d\" --date=\"90 day ago\"";
+our $three_months_ago_cmd= "date +\"%y%m%d\" --date=\"93 day ago\"";
 our $three_months_ago_date=`$three_months_ago_cmd`;
 
 #-- psu release date and current date to seconds from epoch
@@ -165,6 +165,35 @@ our $epoch_current_date  = UnixDate( ParseDate($current_date_cmd), "%s" );
 my $epoch_ojvm_release_date  = UnixDate( ParseDate($ojvm_release_date), "%s" ); 
 
 #-- check current psu patch implemented is older than 3 months
+
+#-- Download and install the latest OPatch 
+
+
+$ENV{mosUser} = "$mos_user";
+$ENV{mosPass} = "$mos_pass";
+
+our $dir_opatch = "/oracle/scripts/APOo/patch_downloader/OPatch";
+our $cmd_dl_latest_OPatch = "/oracle/scripts/APOo/patch_downloader/getMOSPatch.sh patch=6880880 regexp=\".*122010.*\"";
+
+chdir ($dir_opatch);
+our $cmd_del_old_Opatch = "rm p* > /dev/null 2>&1";
+`$cmd_del_old_Opatch`;
+
+system ($cmd_dl_latest_OPatch);
+
+chdir ($ORACLE_HOME);
+our $cmd_del_current_opatch = "rm -rf OPatch/";
+`$cmd_del_current_opatch`;
+
+
+chdir ($dir_opatch);
+print  color ("blue"), "Installating the latest OPatch \n" , color("reset");
+our $cmd_unzip_new_opatch = "unzip p6880880_122010_Linux-x86-64.zip -d $ORACLE_HOME/";
+
+
+system ($cmd_unzip_new_opatch);
+
+
 
 if ($epoch_psu_release_date <= $epoch_three_months_ago_date)
 {
